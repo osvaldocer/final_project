@@ -16,27 +16,6 @@ data <- read_rds("steam_data_set.rds")
 ui <- fluidPage(
     shinytheme("cerulean"),
     navbarPage("Steam Data Final Project", 
-               tabPanel("About",
-                        h1("About the data"),
-                        p("This data is from the gaming platform Steam. More 
-                          specifically, I intend to use existing Steam data to 
-                          complete my final project. Currently I am considering 
-                          some sort of comparative analysis, as several 
-                          variables are contained within the data which would 
-                          serve to create clear visuals. Additionally, I can 
-                          include data from Steam users as well to cross 
-                          reference and perhaps analyze my regions in the US, or
-                          other demographic information. As such I am still 
-                          searching for other potential data sets to include in 
-                          my final project."),
-                        br(),
-                        h2("About this app"),
-                        br(), 
-                        p("My repo can be found at", 
-                          a("https://github.com/osvaldocer/final_project", 
-                            href = "https://github.com/osvaldocer/final_project"))
-                        
-                        ),
                tabPanel("Analysis",
                         titlePanel("Steam Example Graphs"),
                         
@@ -61,7 +40,31 @@ ui <- fluidPage(
                             )
                         )
                         
-                        )),
+                        ),
+               tabPanel("About",
+                        h1("About the data"),
+                        p("This data is from the gaming platform Steam. More 
+                          specifically, I intend to use existing Steam data to 
+                          complete my final project. Currently I am considering 
+                          some sort of comparative analysis, as several 
+                          variables are contained within the data which would 
+                          serve to create clear visuals. Additionally, I can 
+                          include data from Steam users as well to cross 
+                          reference and perhaps analyze my regions in the US, or
+                          other demographic information. As such I am still 
+                          searching for other potential data sets to include in 
+                          my final project. Further, I will take the time in the
+                          coming week to analyze and clean up my data to remove 
+                          the abnormalities presenting themselves in the current
+                          version of my graph."),
+                        br(),
+                        h2("About this app"),
+                        br(), 
+                        p("My repo can be found at", 
+                          a("https://github.com/osvaldocer/steam_data", 
+                            href = "https://github.com/osvaldocer/steam_data"))
+                        
+               )),
 
 )
 
