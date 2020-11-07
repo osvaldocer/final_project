@@ -35,7 +35,9 @@ ui <- fluidPage(
                                 br(),
                                 plotOutput("distPlot2"),
                                 br(),
-                                plotOutput("distPlot3")
+                                plotOutput("distPlot3"),
+                                br(), 
+                                plotOutput("distPlot4")
                                 
                             )
                         )
@@ -104,6 +106,20 @@ server <- function(input, output) {
             labs(title = "Steam Games by Amount of Owners", x = "Game Title", 
                  y = "# of Owners") +
             theme_dark()
+    })
+    
+    output$distPlot4 <- renderPlot({
+        data %>%
+            filter(metacritic > 0) %>%
+            filter(steam_spy_players_estimate > 0) %>%
+            filter(steam_spy_players_estimate < 4000000) %>%
+            ggplot(aes(x = metacritic, y = steam_spy_players_estimate)) +
+            geom_jitter() +
+            labs(title = "Estimated Players by Metacritic Scores", 
+                 x = "Metacritic Score", 
+                 y = "Estimated Playerbase", 
+                 subtitle = "Do higher scores mean more players?") +
+            theme_light()
     })
 }
 
