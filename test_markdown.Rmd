@@ -1,0 +1,74 @@
+---
+title: "Test Document"
+author: "Osvaldo Cervantes"
+date: "12/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rstanarm)
+library(gt)
+library(gtsummary)
+library(broom.mixed)
+```
+
+```{r}
+
+graph <- anxiety %>%
+  ggplot(aes(x = game)) +
+  geom_bar()
+
+
+stan_glm(data = anxiety, 
+         hours ~ gender + gade, 
+         family = gaussian, 
+         refresh = 0)
+
+test <- anxiety %>%
+  filter(gender == "Female")
+
+```
+
+```{r}
+
+anxiety %>%
+  ggplot(aes(x = gade, y = hours)) +
+  geom_col() +
+  labs(title = "Number of Hours by GAD Effects on Work", 
+       x = "Self-Reported Impact of Anxiety on Workplace Performance", 
+       y = "Hours")
+
+anxiety %>%
+  group_by(gad_t) %>%
+  mutate(avg_hours = mean(hours)) %>%
+  ggplot(aes(x = gad_t, y = avg_hours)) +
+  geom_point() +
+  labs(title = "Average Hours Spent Gaming by Anxiety Score", x = "Score on GAD Scale", y = "Average Hours Played")
+
+```
+
+```{r}
+
+tbl_regression(stan_glm(data = anxiety, 
+         hours ~ gender + gade - 1, 
+         family = gaussian, 
+         refresh = 0))
+
+```
+
+
+```{r}
+
+fit_1 <- stan_glm(data = overwatch, 
+         choice_dictation ~ extraversion + conscienctiousness + agreeableness + 
+           nondisclosure_of_imperfection + nondisplay_of_imperfection, 
+         family = gaussian(), 
+         refresh = 0)
+
+tbl_regression(fit_1, intercept = TRUE) %>%
+  as_gt()
+
+```
+

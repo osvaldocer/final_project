@@ -1,0 +1,13 @@
+name: Final_Project
+title: Final_Project
+username:
+account: osvaldocer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3343561
+bundleId: 3938593
+url: https://osvaldocer.shinyapps.io/Final_Project/
+when: 1607009592.14906
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: overwatch

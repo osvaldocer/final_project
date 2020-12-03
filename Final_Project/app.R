@@ -1,48 +1,61 @@
-# https://github.com/osvaldocer/final_project.git
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 library(tidyverse)
 library(shiny)
 library(shinythemes)
+library(gt)
+library(gtsummary)
+library(broom.mixed)
+library(rstanarm)
 
 data <- read_rds("steam_data_set.rds")
+anxiety <- read_rds("anxiety.rds")
+overwatch <- read_rds("overwatch.rds")
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
-    shinytheme("cerulean"),
-    navbarPage("Steam Data Final Project", 
-               tabPanel("Analysis",
-                        titlePanel("Steam Example Graphs"),
-                        
-                        # Sidebar with a slider input for number of bins 
+ui <- fluidPage(theme = shinytheme("united"), 
+    navbarPage("An Analysis of Gaming, Gender, and Psychology",
+               tabPanel("Data",
+               tabsetPanel(
+                   tabPanel("Analysis", 
+                        titlePanel("Psychology and Gaming"),
+                        h3("Anxiety and Gaming"),
+                        br(),
+                        p("In this study, participants were evaluated using 
+                          various criteria, such as GAD 
+                          (General Anxiety Disorder), SWL 
+                          (Satisfaction with Life), and SPIN 
+                          (Social Phobia Inventory). Below, the graph plots the 
+                          hours spent gaming based on the self-reported effect 
+                          of a range of anxiety-related questions on work and 
+                          home relations"),
                         sidebarLayout(
                             sidebarPanel(
-                                sliderInput("games",
-                                            "Number of games:",
-                                            min = 1,
-                                            max = 50,
-                                            value = 10)
-                            ),
-                            
-                            # Show a plot of the generated distribution
+                                sliderInput("participants", 
+                                            "Number of participants:", 
+                                            min = 1, 
+                                            max = 9995,
+                                            value = 100)
+                                ),
                             mainPanel(
-                                plotOutput("distPlot1"),
-                                br(),
-                                plotOutput("distPlot2"),
-                                br(),
-                                plotOutput("distPlot3"),
-                                br(), 
-                                plotOutput("distPlot4")
-                                
-                            )
-                        )
-                        
-                        ),
+                                plotOutput("distPlot1")
+                                )
+                            ), 
+                        sidebarLayout(p("This plot displays the average hours 
+                                        spent gaming, based on the total score 
+                                        on the GAD scale. This scale is created 
+                                        by asking participants questions related
+                                        to anxiety, such as feelings of 
+                                        nervousness or trouble relaxing in the 
+                                        two weeks prior to the survey. The 
+                                        scores reflect different levels of 
+                                        anxiety in an individual, with higher 
+                                        scores being increased anxiety."), 
+                                      mainPanel(
+                                          plotOutput("distPlot2")
+                                          )
+                                      )
+                        ), 
+                   tabPanel("Model")
+                   )
+               ),
                tabPanel("About",
                         h1("About the data"),
                         p("This data is from the gaming platform Steam. More 
@@ -60,68 +73,60 @@ ui <- fluidPage(
                           the abnormalities presenting themselves in the current
                           version of my graph."),
                         br(),
+                        h2("UPDATE"), 
+                        p("As time has gone on, this project has significantly 
+                          evolved from my initial interests. While initially, I 
+                          had proposed this project as one that would 
+                          incorporate Steam data in analysis. However, upon 
+                          reflection, I have instead honed in on the 
+                          intersections of gender and psychology in various 
+                          aspects of gaming. More particularly, I intend on 
+                          investigating how behavioral characteristics impact 
+                          gaming and life outside of gaming, whether through 
+                          character selection, or other such levels of 
+                          analysis."),
+                        br(),
+                        h2("About Me"), 
+                        br(),
+                        p("My name is Osvaldo Cervantes and I am a sophomore at 
+                        Harvard College concentrating in Government. This is my 
+                          first foray into data science, and I enjoy analyzing 
+                          the data behind government processes."),
                         h2("About this app"),
                         br(), 
                         p("My repo can be found at", 
-                          a("https://github.com/osvaldocer/steam_data", 
-                            href = "https://github.com/osvaldocer/steam_data"))
-                        
-               )),
+                          a("https://github.com/osvaldocer/gaming_psychology", 
+                            href = "https://github.com/osvaldocer/gaming_psychology")
+                          )
+                        )
+               )
+    )
 
-)
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
 
     output$distPlot1 <- renderPlot({
-        data %>%
-            arrange(desc(metacritic)) %>%
-            slice(1:10) %>%
-            ggplot(aes(x = query_name, y = metacritic)) +
+        anxiety %>%
+            slice(1:input$participants) %>%
+            ggplot(aes(x = gade, y = hours)) +
             geom_col() +
-            coord_flip() +
-            labs(title = "A Breakdown of Games by Metacritic Score", 
-                 x = "Metacritic Score", y = "Title of Game") +
-            theme_minimal()
-    })
-    
-    output$distPlot2 <- renderPlot({
-        data %>%
-            arrange(desc(metacritic)) %>%
-            slice(1:input$games) %>%
-            ggplot(aes(x = query_name, y = metacritic)) +
-            geom_col() +
-            coord_flip() +
-            labs(title = "A Breakdown of Games by Metacritic Score", 
-                 x = "Metacritic Score", y = "Title of Game") +
+            labs(title = "Number of Hours by GAD Effects on Work", 
+                 x = "Self-Reported Impact of Anxiety on Workplace Performance", 
+                 y = "Hours") +
             theme_classic()
     })
     
-    output$distPlot3 <- renderPlot({
-        data %>%
-            arrange(desc(steam_spy_owners)) %>%
-            slice(1:input$games) %>%
-            ggplot(aes(x = query_name, y = steam_spy_owners)) +
-            geom_col() +
-            labs(title = "Steam Games by Amount of Owners", x = "Game Title", 
-                 y = "# of Owners") +
-            theme_dark()
-    })
-    
-    output$distPlot4 <- renderPlot({
-        data %>%
-            filter(metacritic > 0) %>%
-            filter(steam_spy_players_estimate > 0) %>%
-            filter(steam_spy_players_estimate < 4000000) %>%
-            ggplot(aes(x = metacritic, y = steam_spy_players_estimate)) +
-            geom_jitter() +
-            labs(title = "Estimated Players by Metacritic Scores", 
-                 x = "Metacritic Score", 
-                 y = "Estimated Playerbase", 
-                 subtitle = "Do higher scores mean more players?") +
-            theme_light()
+    output$distPlot2 <- renderPlot({
+        anxiety %>%
+            group_by(gad_t) %>%
+            mutate(avg_hours = mean(hours)) %>%
+            ggplot(aes(x = gad_t, y = avg_hours)) +
+            geom_point() +
+            labs(title = "Average Hours Spent Gaming by Anxiety Score", 
+                 x = "Score on GAD Scale", 
+                 y = "Average Hours Played") +
+            theme_bw()
     })
 }
 
-# Run the application 
 shinyApp(ui = ui, server = server) 

@@ -1,0 +1,12 @@
+name: Test
+title: Test
+username:
+account: osvaldocer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3342144
+bundleId: 3935886
+url: https://osvaldocer.shinyapps.io/Test/
+when: 1606959567.64324
+asMultiple: FALSE
+asStatic: FALSE

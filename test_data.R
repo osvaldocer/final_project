@@ -3,7 +3,6 @@ library(readxl)
 library(readr)
 library(janitor)
 
-
 x <- read_excel("raw_data/games-features.xlsx") %>%
   clean_names()
 
@@ -11,22 +10,178 @@ read_excel("raw_data/games-features.xlsx") %>%
   clean_names() %>%
   write_rds("Final_Project/steam_data_set.rds")
 
+overwatch <- read_csv("raw_data/uploaded_survey_data.csv", 
+              col_types = cols(
+                number = col_double(),
+                age = col_character(),
+                response_id = col_character(),
+                gender = col_character(),
+                fav_char = col_character(),
+                choice_dictation = col_double(),
+                Socialiser = col_double(),
+                Achiever = col_double(),
+                Explorer = col_double(),
+                Killer = col_double(),
+                platform = col_character(),
+                class = col_character(),
+                character_gender = col_character(),
+                Self.Monitoring = col_double(),
+                Nondisclosure.of.Imperfection = col_double(),
+                Nondisplay.of.Imperfection = col_double(),
+                Perfectionistic.Self.Promotion = col_double(),
+                Openness.To.Experience = col_double(),
+                Agreeableness = col_double(),
+                Conscienctiousness = col_double(),
+                Neuroticism = col_double(),
+                Extraversion = col_double())) %>%
+  clean_names()
 
-x %>%
-  filter(metacritic > 0) %>%
-  filter(steam_spy_players_estimate > 0) %>%
-  filter(steam_spy_players_estimate < 4000000) %>%
-  ggplot(aes(x = metacritic, y = steam_spy_players_estimate)) +
-  geom_jitter(alpha = 0.5) +
-  labs(title = "Estimated Players by Metacritic Scores", x = "Metacritic Score", 
-       y = "Estimated Playerbase", subtitle = "Do higher scores mean more players?") +
-  theme_light()
-  
+read_csv("raw_data/uploaded_survey_data.csv", 
+         col_types = cols(
+           number = col_double(),
+           age = col_character(),
+           response_id = col_character(),
+           gender = col_character(),
+           fav_char = col_character(),
+           choice_dictation = col_double(),
+           Socialiser = col_double(),
+           Achiever = col_double(),
+           Explorer = col_double(),
+           Killer = col_double(),
+           platform = col_character(),
+           class = col_character(),
+           character_gender = col_character(),
+           Self.Monitoring = col_double(),
+           Nondisclosure.of.Imperfection = col_double(),
+           Nondisplay.of.Imperfection = col_double(),
+           Perfectionistic.Self.Promotion = col_double(),
+           Openness.To.Experience = col_double(),
+           Agreeableness = col_double(),
+           Conscienctiousness = col_double(),
+           Neuroticism = col_double(),
+           Extraversion = col_double())) %>%
+  write_rds("Final_Project/overwatch.rds")
 
+anxiety <- read_csv("raw_data/GamingStudy_data.csv", col_types = cols(
+  `S. No.` = col_double(),
+  Timestamp = col_double(),
+  GAD1 = col_double(),
+  GAD2 = col_double(),
+  GAD3 = col_double(),
+  GAD4 = col_double(),
+  GAD5 = col_double(),
+  GAD6 = col_double(),
+  GAD7 = col_double(),
+  GADE = col_character(),
+  SWL1 = col_double(),
+  SWL2 = col_double(),
+  SWL3 = col_double(),
+  SWL4 = col_double(),
+  SWL5 = col_double(),
+  Game = col_character(),
+  Platform = col_character(),
+  Hours = col_double(),
+  earnings = col_character(),
+  whyplay = col_character(),
+  League = col_character(),
+  highestleague = col_logical(),
+  streams = col_double(),
+  SPIN1 = col_double(),
+  SPIN2 = col_double(),
+  SPIN3 = col_double(),
+  SPIN4 = col_double(),
+  SPIN5 = col_double(),
+  SPIN6 = col_double(),
+  SPIN7 = col_double(),
+  SPIN8 = col_double(),
+  SPIN9 = col_double(),
+  SPIN10 = col_double(),
+  SPIN11 = col_double(),
+  SPIN12 = col_double(),
+  SPIN13 = col_double(),
+  SPIN14 = col_double(),
+  SPIN15 = col_double(),
+  SPIN16 = col_double(),
+  SPIN17 = col_double(),
+  Narcissism = col_double(),
+  Gender = col_character(),
+  Age = col_double(),
+  Work = col_character(),
+  Degree = col_character(),
+  Birthplace = col_character(),
+  Residence = col_character(),
+  Reference = col_character(),
+  Playstyle = col_character(),
+  accept = col_character(),
+  GAD_T = col_double(),
+  SWL_T = col_double(),
+  SPIN_T = col_double(),
+  Residence_ISO3 = col_character(),
+  Birthplace_ISO3 = col_character())) %>%
+  clean_names() %>%
+  select(-highestleague) %>%
+  filter(gender != "Other") %>%
+  drop_na()
 
-x %>%
-  filter(steam_spy_players_estimate > 0) %>%
-  filter(steam_spy_players_estimate < 40000000) %>%
-  ggplot(aes(x = steam_spy_players_estimate)) +
-  geom_histogram()
+read_csv("raw_data/GamingStudy_data.csv", col_types = cols(
+  `S. No.` = col_double(),
+  Timestamp = col_double(),
+  GAD1 = col_double(),
+  GAD2 = col_double(),
+  GAD3 = col_double(),
+  GAD4 = col_double(),
+  GAD5 = col_double(),
+  GAD6 = col_double(),
+  GAD7 = col_double(),
+  GADE = col_character(),
+  SWL1 = col_double(),
+  SWL2 = col_double(),
+  SWL3 = col_double(),
+  SWL4 = col_double(),
+  SWL5 = col_double(),
+  Game = col_character(),
+  Platform = col_character(),
+  Hours = col_double(),
+  earnings = col_character(),
+  whyplay = col_character(),
+  League = col_character(),
+  highestleague = col_logical(),
+  streams = col_double(),
+  SPIN1 = col_double(),
+  SPIN2 = col_double(),
+  SPIN3 = col_double(),
+  SPIN4 = col_double(),
+  SPIN5 = col_double(),
+  SPIN6 = col_double(),
+  SPIN7 = col_double(),
+  SPIN8 = col_double(),
+  SPIN9 = col_double(),
+  SPIN10 = col_double(),
+  SPIN11 = col_double(),
+  SPIN12 = col_double(),
+  SPIN13 = col_double(),
+  SPIN14 = col_double(),
+  SPIN15 = col_double(),
+  SPIN16 = col_double(),
+  SPIN17 = col_double(),
+  Narcissism = col_double(),
+  Gender = col_character(),
+  Age = col_double(),
+  Work = col_character(),
+  Degree = col_character(),
+  Birthplace = col_character(),
+  Residence = col_character(),
+  Reference = col_character(),
+  Playstyle = col_character(),
+  accept = col_character(),
+  GAD_T = col_double(),
+  SWL_T = col_double(),
+  SPIN_T = col_double(),
+  Residence_ISO3 = col_character(),
+  Birthplace_ISO3 = col_character())) %>%
+  clean_names() %>%
+  select(-highestleague) %>%
+  filter(gender != "Other") %>%
+  drop_na() %>%
+  write_rds("Final_Project/anxiety.rds")
 
