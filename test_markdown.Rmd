@@ -12,6 +12,9 @@ library(rstanarm)
 library(gt)
 library(gtsummary)
 library(broom.mixed)
+library(rgdal)
+library(leaflet)
+library(tigris)
 ```
 
 ```{r}
@@ -51,10 +54,15 @@ anxiety %>%
 
 ```{r}
 
-tbl_regression(stan_glm(data = anxiety, 
-         hours ~ gender + gade - 1, 
+fit_model <- stan_glm(data = anxiety, 
+         hours ~ gender + gade + gad_t, 
          family = gaussian, 
-         refresh = 0))
+         refresh = 0)
+
+tbl_regression(fit_model) %>%
+  as_gt() %>%
+  tab_header(title = "Regression of Hours Spent Gaming", subtitle = "The Link Between Hours Played, Gender, and Anxiety") %>%
+  tab_source_note("Source: Study Published by Marian Sauter and Dejan Draschkow")
 
 ```
 
@@ -62,13 +70,53 @@ tbl_regression(stan_glm(data = anxiety,
 ```{r}
 
 fit_1 <- stan_glm(data = overwatch, 
-         choice_dictation ~ extraversion + conscienctiousness + agreeableness + 
-           nondisclosure_of_imperfection + nondisplay_of_imperfection, 
+         choice_dictation ~ extraversion + conscienctiousness + agreeableness, 
          family = gaussian(), 
          refresh = 0)
 
 tbl_regression(fit_1, intercept = TRUE) %>%
-  as_gt()
+  as_gt() %>%
+  tab_header(title = "Title", 
+             subtitle = "Subtitle") %>%
+  tab_source_note("Source: source")
+  
+
+```
+
+```{r}
+
+nations <- anxiety %>%
+  count(residence)
+
+```
+
+```{r}
+
+countries <- readOGR("raw_data/nations", "ne_50m_admin_0_countries")
+
+gad_total <- anxiety %>%
+  group_by(residence) %>%
+  summarize(gad_t = sum(gad_t)) %>%
+  gad_total$residence[gad_total$residence == "USA"] <- "United States of America"
+
+joined_dataset <- geo_join(countries, gad_total, "ADMIN", "residence")
+
+leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(data = joined_dataset, fillColor = joined_dataset$residence)
+
+```
+
+```{r}
+
+
+gad_total$residence[gad_total$residence == "USA"] <- "United States of America"
+
+gad_total$residence[gad_total$residence == "UK"] <- "United Kingdom"
+
+countries
+
+joined_dataset
 
 ```
 
