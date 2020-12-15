@@ -4,6 +4,11 @@ library(shinythemes)
 library(gt)
 library(gtsummary)
 library(rstanarm)
+library(broom.mixed)
+
+# My final mistake and final correction, broom.mixed was integral in publishing 
+# this correctly, as without it my published shinyapp lacked the necessary 
+# models.
 
 # Overall, this project was honestly my most difficult final of this semester. 
 # I feel I definitely struggled with synthesizing the lessons gleaned from 
