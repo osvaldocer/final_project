@@ -3,15 +3,18 @@ library(shiny)
 library(shinythemes)
 library(gt)
 library(gtsummary)
-library(broom.mixed)
 library(rstanarm)
 
-# While anxiety and overwatch are being implemented, data is a remnant of my 
-# previous topic
+# Overall, this project was honestly my most difficult final of this semester. 
+# I feel I definitely struggled with synthesizing the lessons gleaned from 
+# earlier in the semester all together. However, what I could accomplish, I feel
+# was pretty informative and effective.
 
-data <- read_rds("steam_data_set.rds")
 anxiety <- read_rds("anxiety.rds")
 overwatch <- read_rds("overwatch.rds")
+
+# These two datasets were my focus for this project. Both are described 
+# extensively in the About portion of my project.
 
 ui <- fluidPage(theme = shinytheme("united"), 
     navbarPage("An Analysis of Gaming, Gender, and Psychology",
@@ -48,6 +51,16 @@ ui <- fluidPage(theme = shinytheme("united"),
                                             max = 9995,
                                             value = 5000)
                                 ),
+                            
+                            # there was definitely difficulty for me with 
+                            # finding what exactly to make interactive. As part 
+                            # of my process, I considered adding an interactive 
+                            # map, as the anxiety dataset does contain countries
+                            # of origin for its participants. However, the 
+                            # complex nature coupled with limited time due to 
+                            # last minute changes limited this scope of the 
+                            # project.
+                            
                             mainPanel(
                                 plotOutput("distPlot1")
                                 )
@@ -91,15 +104,96 @@ ui <- fluidPage(theme = shinytheme("united"),
                         ), 
                    tabPanel("Model", 
                             titlePanel("Analyzing Hours Played to Anxiety"), 
-                            p("this is my analysis of the model", 
-                              gt_output("model_table"), 
-                              titlePanel("additional model"), 
-                              p("additional analysis"))
+                            p("This regression model depicts the links between 
+                              the dependent variable, hours, and the various 
+                              independent variables. In particular, gender, the 
+                              self-reported GAD variable, and cumulative GAD 
+                              score are all used. For starters, the variable 
+                              gender seems to be statistically significant. 
+                              Between Male and Female, Males experience a median
+                              of 3.3 hours increase in their playtime. This 
+                              seems consistent with the broader data and 
+                              societal understandings of who exactly plays 
+                              videogames. As for the self-reported GAD 
+                              responses, Extremely difficult presents an 
+                              insignificant amount of individuals. For Very 
+                              difficult, there is a median of negative 1.7 hour 
+                              impact to playtime, and this trend continues to 
+                              increase as the self-reported values reach the 
+                              least impactful anxiety, at Not difficult at all. 
+                              This portion of the model further reinforced what 
+                              was established in the analysis of the second plot
+                              in the Analysis tab. That is to say, this model 
+                              seems to confirm conclusions made for the second 
+                              graph, in which those who suffer from increased 
+                              anxiety play for extended hours."),
+                            
+                            # creating these two models was particularly 
+                            # interesting for me. Previously, we had been 
+                            # dictated what variables to use for our regression 
+                            # models, in everything from our psets to the exams. 
+                            # Thus, sifting through these datasets was difficult
+                            # at first, particularly with my old steam dataset 
+                            # no longer present in this shinyapp. I hope in the 
+                            # future I delve into additional ways of visualizing
+                            # these models, as we had extensive practice with 
+                            # posterior distribution models and normal 
+                            # distributions.
+                            
+                              gt_output("model_table1"), 
+                              titlePanel("Analysis of Character Choice in 
+                                         Videogames with Psychological 
+                                         Characteristics"), 
+                              p("This regression model departs from the previous
+                                model as well as the previous tab by concerning 
+                                itself with character choice in videogames. 
+                                Using the choice_dictation variable, which 
+                                describes the willingness to adhere to group 
+                                composition by choosing with team input, as the 
+                                dependent variable, other factors like gender or
+                                various psychological charactersitics formed the
+                                basis of the independent variables. We begin by 
+                                acknowledging that, under gendered terms, a Male
+                                is a median of -0.53 on the scale, meaning he is
+                                less likely to adhere to team cohesion than a 
+                                Female when choosing their characters. Further 
+                                analysis could prove to find that gendered 
+                                interactions in the real world truly transition 
+                                to virtual, generally anonymous mediums such as 
+                                social media or online gaming. Additionally, 
+                                extraversion holds a positive coefficient of 
+                                0.85, suggesting that extraverts are more likely
+                                to be teamplayers, seeking to choose their 
+                                characters based on team input. Neuroticism, 
+                                while a negative value of 0.08, is spread out 
+                                through a large range, as demonstrated by the 
+                                95% confidence interval being between -2 and 
+                                1.8. Such a range between negative and positive 
+                                values suggests neuroticism may not play as much
+                                of a factor in whether one does or does not 
+                                consider their team when they choose their 
+                                character. Finally, conscienctiousness and 
+                                agreeableness are 2.2 and 5.8 respectively, 
+                                therefore establishing strong positive relation 
+                                correlation with these two behaviors and 
+                                character dictation. Thus, it seems that in 
+                                general, folks who hold traits valuable to 
+                                team-based exercises do see them translated 
+                                into online mediums, where accountability is 
+                                significantly reduced."), 
+                            gt_output("model_table2")
                             )
                )
                ),
                tabPanel("About",
                         h1("About the data"),
+                        
+                        # removed from this final version of the shinyapp is the
+                        # work from my original version, as I had explored how 
+                        # to incorporate steam data into my project. Thus, my 
+                        # new about section varies in content from my original 
+                        # submitted as a milestone weeks prior.
+                        
                         p("This data is from two separate studies related to 
                           mental health and gaming in one way or another. One 
                           study, titled ‘Character choice in online gaming,’ was
@@ -142,8 +236,16 @@ ui <- fluidPage(theme = shinytheme("united"),
                             href = "https://github.com/osvaldocer/gaming_psychology")
                           )
                         )
-               ))
+               )
+    )
 
+# The server portion involved extensive research to see how to implement plots 
+# and tables into this section of the shinyapp. My particular difficulty arose 
+# from the table format of stan_glm. Our regressions prior had not included use 
+# of tables as much, and so finding how to implement them through 
+# tbl_regression() functions. Additionally, the implementation of an interactive
+# portion was honestly fascinating, as I managed to introduce sliders to these 
+# functions.
 
 server <- function(input, output) {
 
@@ -171,6 +273,7 @@ server <- function(input, output) {
     })
     
     output$model_table1 <- render_gt({
+        set.seed(1)
         fit_model <- stan_glm(data = anxiety, 
                               hours ~ gender + gade + gad_t, 
                               family = gaussian, 
@@ -186,19 +289,27 @@ server <- function(input, output) {
     })
     
     output$model_table2 <- render_gt({
-        fit_model <- stan_glm(data = anxiety, 
-                              hours ~ gender + gade + gad_t, 
-                              family = gaussian, 
-                              refresh = 0)
+        set.seed(1)
+        fit_1 <- stan_glm(data = overwatch, 
+                          choice_dictation ~ gender + Extraversion + Neuroticism
+                          + Conscienctiousness + Agreeableness, 
+                          family = gaussian(), 
+                          refresh = 0)
         
-        tbl_regression(fit_model) %>%
+        tbl_regression(fit_1) %>%
             as_gt() %>%
-            tab_header(title = "Regression of Hours Spent Gaming", 
-                       subtitle = "The Link Between Hours Played, Gender, and 
-                       Anxiety") %>%
-            tab_source_note("Source: Study Published by Marian Sauter and Dejan 
-                            Draschkow")
+            tab_header(title = "Regression of Character Choice in Overwatch", 
+                       subtitle = "The Link Between Character Choices and 
+                       Differing Behavioral Characteristics") %>%
+            tab_source_note("Source: 'Character choice in online gaming' by 
+            Duncan Hodges and Oliver Buckley")
     })
 }
 
-shinyApp(ui = ui, server = server) 
+shinyApp(ui = ui, server = server)
+
+# All in all, I enjoyed my time in this course and with the process of creating 
+# this shinyapp. I hope to employ at least some of these skills I've learned in 
+# my future classes and future career.
+# To whomever is grading this, Happy Holidays!
+

@@ -48,7 +48,8 @@ anxiety %>%
   mutate(avg_hours = mean(hours)) %>%
   ggplot(aes(x = gad_t, y = avg_hours)) +
   geom_point() +
-  labs(title = "Average Hours Spent Gaming by Anxiety Score", x = "Score on GAD Scale", y = "Average Hours Played")
+  labs(title = "Average Hours Spent Gaming by Anxiety Score", 
+       x = "Score on GAD Scale", y = "Average Hours Played")
 
 ```
 
@@ -61,8 +62,11 @@ fit_model <- stan_glm(data = anxiety,
 
 tbl_regression(fit_model) %>%
   as_gt() %>%
-  tab_header(title = "Regression of Hours Spent Gaming", subtitle = "The Link Between Hours Played, Gender, and Anxiety") %>%
-  tab_source_note("Source: Study Published by Marian Sauter and Dejan Draschkow")
+  tab_header(title = "Regression of Hours Spent Gaming", 
+             subtitle = "The Link Between Hours Played, Gender, and 
+             Anxiety") %>%
+  tab_source_note("Source: Study Published by Marian Sauter and Dejan 
+                  Draschkow")
 
 ```
 
@@ -70,15 +74,17 @@ tbl_regression(fit_model) %>%
 ```{r}
 
 fit_1 <- stan_glm(data = overwatch, 
-         choice_dictation ~ extraversion + conscienctiousness + agreeableness, 
+         choice_dictation ~ neuroticism + conscienctiousness + agreeableness, 
          family = gaussian(), 
          refresh = 0)
 
 tbl_regression(fit_1, intercept = TRUE) %>%
   as_gt() %>%
-  tab_header(title = "Title", 
-             subtitle = "Subtitle") %>%
-  tab_source_note("Source: source")
+  tab_header(title = "Regression of Character Choice in Overwatch", 
+             subtitle = "The Link Between Character Choices and Differing 
+             Behavioral Characteristics") %>%
+  tab_source_note("Source: 'Character choice in online gaming' by Duncan Hodges 
+                  and Oliver Buckley")
   
 
 ```
